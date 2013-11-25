@@ -23,7 +23,7 @@ from email.MIMEText import MIMEText
 _log = None
 
 #
-# WebBrick time event generator
+# WebBrick Email Handler
 #
 class EmailAction( BaseHandler ):
     """
