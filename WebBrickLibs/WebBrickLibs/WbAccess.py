@@ -97,18 +97,25 @@ def DoHTTPRequest(adrs, cmd, uri):
     Execute an HTTP request using the specified host, command and uri path,
     and return the corresponding response object, or None if the request fails.
     """
-    Trace("HTTP to %s, %s %s" % (adrs, cmd, uri), "WebBrickLibs.WbAccess.WbAccess" )
+    #Trace("HTTP to %s, %s %s" % (adrs, cmd, uri), "WebBrickLibs.WbAccess.WbAccess" )
     h = HTTPTimeoutConn(adrs)       # Connection with 2-second response timeout
     try:
-        h.request( cmd, uri )
-    except socket.error, msg:
-        Warn("Socket open failure: %s (%s/%s)"%(msg,adrs,uri),
-                "WebBrickLibs.WbAccess.DoHTTPRequest")
-        h.close()   # ensure socket closed when timeout occurs.
-        if str(msg) == "timed out": raise HTTPTimeout()
-        raise WbAccessException("DoHTTPRequest: %s " % msg )
-    txtlines = h.getresponse()
-    h.close()
+        try:
+            h.request( cmd, uri )
+        except socket.error, msg:
+            Warn("Socket open failure: %s (%s/%s)"%(msg,adrs,uri),
+                    "WebBrickLibs.WbAccess.DoHTTPRequest")
+            
+            if str(msg) == "timed out": raise HTTPTimeout()
+            raise WbAccessException("DoHTTPRequest: Addrees: %s Error: %s" % (adrs,msg) )
+        txtlines = h.getresponse()
+    except Exception,e :
+        # what would the stacktrace look like?
+        Warn("Get Response Failure: %s (%s/%s)"%(cmd,adrs,uri),
+                    "WebBrickLibs.WbAccess.DoHTTPRequest")
+        raise
+    finally:
+        h.close()
     return txtlines
 
 def isUriUnreserved(c):
