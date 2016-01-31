@@ -40,6 +40,8 @@ evtSecond2 = makeEvent( 'http://id.webbrick.co.uk/events/time/second', 'time/sec
 evtSecond3 = makeEvent( 'http://id.webbrick.co.uk/events/time/second', 'time/second', { 'year': 2007, 'month': 2, 'date': 3, 'day': 1,'week':2, 'hour': 4, 'minute':'1', 'second':'3', 'timestr':'04:01:03' } )
 evtSecond4 = makeEvent( 'http://id.webbrick.co.uk/events/time/second', 'time/second', { 'year': 2007, 'month': 2, 'date': 3, 'day': 1,'week':2, 'hour': 4, 'minute':'1', 'second':'4', 'timestr':'04:01:04' } )
 evtSecond5 = makeEvent( 'http://id.webbrick.co.uk/events/time/second', 'time/second', { 'year': 2007, 'month': 2, 'date': 3, 'day': 1,'week':2, 'hour': 4, 'minute':'1', 'second':'5', 'timestr':'04:01:05' } )
+evtSecond6 = makeEvent( 'http://id.webbrick.co.uk/events/time/second', 'time/second', { 'year': 2007, 'month': 2, 'date': 3, 'day': 1,'week':2, 'hour': 4, 'minute':'1', 'second':'6', 'timestr':'04:01:06' } )
+evtSecond7 = makeEvent( 'http://id.webbrick.co.uk/events/time/second', 'time/second', { 'year': 2007, 'month': 2, 'date': 3, 'day': 1,'week':2, 'hour': 4, 'minute':'1', 'second':'7', 'timestr':'04:01:07' } )
 evtSecond10 = makeEvent( 'http://id.webbrick.co.uk/events/time/second', 'time/second', { 'year': 2007, 'month': 2, 'date': 3, 'day': 1,'week':2, 'hour': 4, 'minute':'1', 'second':'10', 'timestr':'04:01:10' } )
 evtSecond15 = makeEvent( 'http://id.webbrick.co.uk/events/time/second', 'time/second', { 'year': 2007, 'month': 2, 'date': 3, 'day': 1,'week':2, 'hour': 4, 'minute':'1', 'second':'15', 'timestr':'04:01:15' } )
 evtSecond20 = makeEvent( 'http://id.webbrick.co.uk/events/time/second', 'time/second', { 'year': 2007, 'month': 2, 'date': 3, 'day': 1,'week':2, 'hour': 4, 'minute':'1', 'second':'20', 'timestr':'04:01:20' } )
@@ -156,4 +158,39 @@ evtHome = makeEvent( 'http://id.webbrick.co.uk/events/config/get', 'occupants/ho
 evtAway = makeEvent( 'http://id.webbrick.co.uk/events/config/get', 'occupants/home', { 'val':'0' } )
 
 evtMorningDark = makeEvent( 'http://id.webbrick.co.uk/events/time/dayphaseext', 'time/dayphaseext', { 'dayphasetext':'Morning:Dark' } )
+
+# Events for testing SolarRun
+
+
+evtSolarRunConEnable = makeEvent( 'http://id.webbrick.co.uk/events/config/get', 'test/SolarRun/1/enable', { 'val':'True' } )
+evtSolarRunConDisable = makeEvent( 'http://id.webbrick.co.uk/events/config/get', 'test/SolarRun/1/enable', { 'val':'False' } )
+evtSolarRunConCheckTime = makeEvent( 'http://id.webbrick.co.uk/events/config/get', 'test/SolarRun/1/check_time', { 'val':'10' } )   # in minutes
+evtSolarRunConCheckRunTime = makeEvent( 'http://id.webbrick.co.uk/events/config/get', 'test/SolarRun/1/check_run_time', { 'val':'2' } ) # in seconds
+
+evtMorningLight = makeEvent( 'http://id.webbrick.co.uk/events/time/dayphaseext', 'time/dayphaseext', { 'dayphasetext':'Morning:Light' } )
+
+evtCT_0_25 = makeEvent( 'http://id.webbrick.co.uk/events/webbrick/CT', 'webbrick/100/CT/0', { 'val':25 } )
+evtCT_0_50 = makeEvent( 'http://id.webbrick.co.uk/events/webbrick/CT', 'webbrick/100/CT/0', { 'val':50 } )
+evtCT_0_75 = makeEvent( 'http://id.webbrick.co.uk/events/webbrick/CT', 'webbrick/100/CT/0', { 'val':75 } )
+evtCT_0_80 = makeEvent( 'http://id.webbrick.co.uk/events/webbrick/CT', 'webbrick/100/CT/0', { 'val':80 } )
+evtCT_0_85 = makeEvent( 'http://id.webbrick.co.uk/events/webbrick/CT', 'webbrick/100/CT/0', { 'val':85 } )
+evtCT_0_90 = makeEvent( 'http://id.webbrick.co.uk/events/webbrick/CT', 'webbrick/100/CT/0', { 'val':90 } )
+
+evtCT_1_25 = makeEvent( 'http://id.webbrick.co.uk/events/webbrick/CT', 'webbrick/100/CT/1', { 'val':25 } )
+evtCT_1_50 = makeEvent( 'http://id.webbrick.co.uk/events/webbrick/CT', 'webbrick/100/CT/1', { 'val':50 } )
+evtCT_1_75 = makeEvent( 'http://id.webbrick.co.uk/events/webbrick/CT', 'webbrick/100/CT/1', { 'val':75 } )
+evtCT_1_80 = makeEvent( 'http://id.webbrick.co.uk/events/webbrick/CT', 'webbrick/100/CT/1', { 'val':80 } )
+evtCT_1_85 = makeEvent( 'http://id.webbrick.co.uk/events/webbrick/CT', 'webbrick/100/CT/1', { 'val':85 } )
+evtCT_1_90 = makeEvent( 'http://id.webbrick.co.uk/events/webbrick/CT', 'webbrick/100/CT/1', { 'val':90 } )
+
+evtSecond180 = makeEvent( 'http://id.webbrick.co.uk/events/time/second', 'time/second', { 'year': 2007, 'month': 2, 'date': 3, 'day': 1,'week':2, 'hour': 4, 'minute':'3', 'second':'55', 'timestr':'04:03:55' } )
+
+
+
+
+
+
+
+
+
         
