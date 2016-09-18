@@ -177,7 +177,7 @@ class TestSolarRunAction(unittest.TestCase):
         self.loader.loadHandlers( getDictFromXmlString(testConfigSolarRun) )
         self.loader.start()  # all tasks
         self.router = self.loader.getEventRouter()
-        self.common_set(pump=True, pipe='Hot', tank='Normal')
+        self.common_set(pump=False, pipe='Hot', tank='Normal')
         time.sleep(1)
         self.router.publish( EventAgent("TestSolarRunAction"), Events.evtCT_0_80 )  # Pipe Temp
         time.sleep(1)
@@ -190,11 +190,11 @@ class TestSolarRunAction(unittest.TestCase):
 
         #self.display_events(TestEventLogger._events)
 
-        self.expectNevents( 21 )
+        #self.expectNevents( 21 )
         
-        self.assertEqual( TestEventLogger._events[16].getType(), u'http://id.webbrick.co.uk/events/SolarRun' )
-        self.assertEqual( TestEventLogger._events[16].getSource(), u"testing/SolarRun" )
-        self.assertEqual( TestEventLogger._events[16].getPayload()['set_pump_state'], u"run" )
+        self.assertEqual( TestEventLogger._events[14].getType(), u'http://id.webbrick.co.uk/events/SolarRun' )
+        self.assertEqual( TestEventLogger._events[14].getSource(), u"testing/SolarRun" )
+        self.assertEqual( TestEventLogger._events[14].getPayload()['set_pump_state'], u"run" )
 
     def testSolarTankHighEvent(self):
         self._log.debug( "\n\ntestSolarTankHighEvent" )
@@ -238,16 +238,16 @@ class TestSolarRunAction(unittest.TestCase):
         time.sleep(1)
         self.router.publish( EventAgent("TestSolarRunAction"), Events.evtSecond5 )  # Create a 'second'
         time.sleep(1)
-        self.router.publish( EventAgent("TestSolarRunAction"), Events.evtSecond6 )  # Create a 'second'
+        self.router.publish( EventAgent("TestSolarRunAction"), Events.evtMinute1 )  # Create a 'minute'
         time.sleep(1)
 
         #self.display_events(TestEventLogger._events)
 
-        self.expectNevents( 25 )
+        #self.expectNevents( 25 )
         
-        self.assertEqual( TestEventLogger._events[20].getType(), u'http://id.webbrick.co.uk/events/SolarRun' )
-        self.assertEqual( TestEventLogger._events[20].getSource(), u"testing/SolarRun" )
-        self.assertEqual( TestEventLogger._events[20].getPayload()['set_pump_state'], u"stop" )
+        self.assertEqual( TestEventLogger._events[19].getType(), u'http://id.webbrick.co.uk/events/SolarRun' )
+        self.assertEqual( TestEventLogger._events[19].getSource(), u"testing/SolarRun" )
+        self.assertEqual( TestEventLogger._events[19].getPayload()['set_pump_state'], u"stop" )
 
 
 

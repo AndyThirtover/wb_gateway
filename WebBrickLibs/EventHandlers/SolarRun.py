@@ -1,4 +1,6 @@
 # Copyright Andy Harris 2016 
+# Copyright Andy Harris 2016 
+# Copyright Andy Harris 2016 
 # Licenced under 3 clause BSD licence 
 
 #
@@ -198,10 +200,11 @@ class SolarRun( BaseHandler ):
         self._counter = 0         # reset
 
 
-    def sendSolarRunEvent(self, new_pump_state):
+    def sendSolarRunEvent(self, new_pump_state, reason='event'):
         self._log.debug ("Sending SolarRun Event: %s" % new_pump_state)
         self._SolarRun_event = Event(self._SolarRun_evt_type,self._SolarRun_evt_source, {'set_pump_state': new_pump_state,
-                                                                                        'pump_state': self._pump_state} ) 
+                                                                                        'pump_state': self._pump_state,
+                                                                                        'reason': reason} ) 
         self.sendEvent( self._SolarRun_event)
         self._SolarRun_event = None  # reset
 
@@ -275,6 +278,8 @@ class SolarRun( BaseHandler ):
             now = int(inEvent.getPayload()['minute'])
             if (now%self._check_time == 0) and self._enable and not self._isDark:
                 self.Evaluate_Conditions('check')
+            else:
+                self.Evaluate_Conditions('minute')
             return makeDeferred(StatusVal.OK)
         
         elif self._pump_event and inEvent.getType() == self._pump_event['type'] and inEvent.getSource() == self._pump_event['source']:
@@ -313,13 +318,32 @@ class SolarRun( BaseHandler ):
 
         if self._tank_temperature > self._tank_limit:
             self._log.debug('Set pump to stop OVERTEMPERATURE %s' % self._tank_temperature)
-            self.sendSolarRunEvent('stop')
+            self.sendSolarRunEvent('stop','over_temperature')
             self._state = 'over_temperature'
+            return # nothing more to do
+
+
+        if self._isDark:
+            # its dark stop the pump
+            self._log.debug('Set pump to stop because dark')
+            if (self._pump_state == 1):
+                self.sendSolarRunEvent('stop','darkness')
+            self._state = 'inDarkness'
+            return # nothing more to do if we are in darkness
+
+        if not self._enable:
+            # we are disabled, stop the pump do nothing more
+            self._log.debug('Set pump to stop because not enabled')
+            if (self._pump_state == 1):
+                self.sendSolarRunEvent('stop','not enabled')
+            self._state = 'Not Enabled'
+            return 
+
 
         if why == 'check':
             if (self._pump_state == 0) and (self._pump_check_run == False):
                 self._log.debug('Set pump to checking')
-                self.sendSolarRunEvent('check_run')
+                self.sendSolarRunEvent('check_run','checking')
                 self._pump_check_run = True
                 self._state = 'checking'
                 self._pump_check_start = time.time()
@@ -327,33 +351,28 @@ class SolarRun( BaseHandler ):
 
         if self._tank_temperature and self._pipe_temperature:
             # only evaluate if you have both temperatures available
-            if (self._pipe_temperature + self._threshold) > self._tank_temperature:
+            differential = self._pipe_temperature - self._tank_temperature
+            if self._pipe_temperature  > (self._tank_temperature + self._threshold):
                 # pipe is hot pump should run as long as the tank is not over temperature
                 if self._tank_temperature < self._tank_limit:
-                    self._log.debug('Set pump to run %s - %s' % (self._pipe_temperature, self._tank_temperature))
-                    self.sendSolarRunEvent('run')
-                    self._state = 'run'
+                    if (self._pump_state == 0):
+                        self._log.debug('Set pump to run %s - %s' % (self._pipe_temperature, self._tank_temperature))
+                        self.sendSolarRunEvent('run', 'heat available %s' % differential)
+                        self._state = 'run'
 
-            if (self._pipe_temperature + self._threshold) < self._tank_temperature:
+            if self._pipe_temperature < (self._tank_temperature + self._threshold):
                 if self._pump_check_run:
                     if (time.time() - self._pump_check_start) < self._pump_check_run_time:
                         # Do nothing until the check run is complete
                         self._log.debug('Waiting for check_run to complete')
                         pass
+                    else:
+                        self._pump_check_run = False
+                        self.sendSolarRunEvent('stop', 'heat not available at end of check run %s' % differential)
                 else:
-                    # Pump check run as come to an end
+                    # Not in pump check run, no temperature - stop pump.
                     self._log.debug('Set pump to stop, not in checking, low differential %s - %s' % (self._pipe_temperature, self._tank_temperature))
-                    self._pump_check_run = False
-                    self.sendSolarRunEvent('stop')
                     self._state = 'idle'
-
-
-        if self._isDark:
-            # its dark stop the pump
-            self._log.debug('Set pump to stop because dark')
-            self.sendSolarRunEvent('stop')
-            self._state = 'inDarkness'
-
-
-
+                    if (self._pump_state == 1):
+                        self.sendSolarRunEvent('stop', 'heat not available %s' % differential)
 
