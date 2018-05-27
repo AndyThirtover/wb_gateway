@@ -40,7 +40,7 @@ def checkTemplateName( fullTemplateName ):
 
         except ImportError, ex:
             # does not exists use default.
-            _log.exception( 'error loading %s' %(fullTemplateName) )
+            _log.debug( 'Import error loading %s' %(fullTemplateName) )
             pass
 
         except Exception, ex:
