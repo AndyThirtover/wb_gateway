@@ -12,22 +12,6 @@ var pollerTimeout = 15.0;
 var pollerSoonDelay = 1.0;
 
 // ----------------------------------------------------------------
-// Manifest functions
-// ----------------------------------------------------------------
-
-// Update the cache
-
-var webappCache = window.applicationCache;
- 
-function updateCache()
-{
-	webappCache.swapCache();
-}
- 
-webappCache.addEventListener("updateready", updateCache, false);
-
-
-// ----------------------------------------------------------------
 // General functions
 // ----------------------------------------------------------------
 
