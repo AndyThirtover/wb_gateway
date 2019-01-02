@@ -2,7 +2,7 @@
 # Licenced under 3 clause BSD licence 
 
 # 
-#  Tests for SolarRun
+#  Tests for UnderFloor
 #
 
 import sys, logging, time
@@ -22,9 +22,9 @@ from Utils import *
 
 # Configuration for the tests
 #
-# this test uses the an event test a SolarRun
+# this test uses the an event test a UnderFloor
 #
-testConfigSolarRun = """<?xml version="1.0" encoding="utf-8"?>
+testConfigUnderFloor = """<?xml version="1.0" encoding="utf-8"?>
 <eventInterfaces>
 
     <eventInterface module='EventHandlers.tests.TestEventLogger' name='TestEventLogger'>
@@ -38,18 +38,17 @@ testConfigSolarRun = """<?xml version="1.0" encoding="utf-8"?>
         </eventtype>
     </eventInterface>
 
-    <eventInterface  module='EventHandlers.SolarRun' name='SolarRun' >
-        <check_time type='http://id.webbrick.co.uk/events/config/get' source='test/SolarRun/1/check_time' />   
-        <check_run_time type='http://id.webbrick.co.uk/events/config/get' source='test/SolarRun/1/check_run_time' />   
-        <enable type='http://id.webbrick.co.uk/events/config/get' source='test/SolarRun/1/enable' />  
-        <pump type='http://id.webbrick.co.uk/events/webbrick/DO' source='webbrick/100/DO/0' key="state" invert="true" />  
-        <pipe_temperature type='http://id.webbrick.co.uk/events/webbrick/CT' source='webbrick/100/CT/0' />  
-        <tank_temperature type='http://id.webbrick.co.uk/events/webbrick/CT' source='webbrick/100/CT/1' /> 
+    <eventInterface  module='EventHandlers.UnderFloor' name='UnderFloor' >
+         <zone_temperature type='http://id.webbrick.co.uk/zones/zone' source='zone7/state' />  
+         <run_event type='http://id.webbrick.co.uk/zones/zone' source='zone999/run' />  
+         <stop_event type='http://id.webbrick.co.uk/zones/zone' source='zone999/stop' />  
+         <air_temperature type='http://id.webbrick.co.uk/events/webbrick/CT' source='webbrick/999/CT/0' />  
+         <floor_temperature type='http://id.webbrick.co.uk/events/webbrick/CT' source='webbrick/999/CT/1' />  
 
-        <eventtype type="http://id.webbrick.co.uk/events/SolarRun">
-            <eventsource source="testing/SolarRun">
+        <eventtype type="http://id.webbrick.co.uk/events/UnderFloor">
+            <eventsource source="testing/UnderFloor">
                 <event>
-                    <newEvent type='testing' source='result/SolarRun' />
+                    <newEvent type='testing' source='result/UnderFloor' />
                 </event>
             </eventsource>
         </eventtype>
@@ -63,10 +62,10 @@ testConfigSolarRun = """<?xml version="1.0" encoding="utf-8"?>
 
 
 
-class TestSolarRunAction(unittest.TestCase):
+class TestUnderFloorAction(unittest.TestCase):
 
     def setUp(self):
-        self._log = logging.getLogger( "TestSolarRunAction" )
+        self._log = logging.getLogger( "TestUnderFloorAction" )
         self._log.debug( "\n\nsetUp" )
 
         self.router = None
@@ -93,30 +92,20 @@ class TestSolarRunAction(unittest.TestCase):
         self.assertEqual( len(TestEventLogger._events), cnt)
 
     def common_set(self,pump=False, pipe='Cold', tank='Normal' ):
-        self.router.publish( EventAgent("TestSolarRunAction"), Events.evtSolarRunConEnable )
-        self.router.publish( EventAgent("TestSolarRunAction"), Events.evtSolarRunConCheckTime )
-        self.router.publish( EventAgent("TestSolarRunAction"), Events.evtSolarRunConCheckRunTime )
-        self.router.publish( EventAgent("TestSolarRunAction"), Events.evtLight )
-        self.router.publish( EventAgent("TestSolarRunAction"), Events.evtMorningLight )
-        if pump:
-            self.router.publish( EventAgent("TestSolarRunAction"), Events.evtDO_0_on ) # This should map to pump on
-        else:
-            self.router.publish( EventAgent("TestSolarRunAction"), Events.evtDO_0_off ) # This should map to pump off
-
-        self.router.publish( EventAgent("TestSolarRunAction"), Events.evtSecond0 )  # Create a 'second'
-        self.router.publish( EventAgent("TestSolarRunAction"), Events.evtSecond1 )  # Create a 'second'
-        self.router.publish( EventAgent("TestSolarRunAction"), Events.evtSecond2 )  # Create a 'second'
-        self.router.publish( EventAgent("TestSolarRunAction"), Events.evtMinute10 )  # Create a minute that forces a check
+        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtSecond0 )  # Create a 'second'
+        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtSecond1 )  # Create a 'second'
+        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtSecond2 )  # Create a 'second'
+        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtMinute10 )  # Create a minute that forces a check
         if pipe == 'Cold':
-            self.router.publish( EventAgent("TestSolarRunAction"), Events.evtCT_0_25 )  # Pipe Temp
+            self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtCT_0_15 )  # Air Temp
         else:
-            self.router.publish( EventAgent("TestSolarRunAction"), Events.evtCT_0_80 )  # Pipe Temp
+            self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtCT_0_25 )  # Air Temp
         if tank == 'Normal':            
-            self.router.publish( EventAgent("TestSolarRunAction"), Events.evtCT_1_50 )  # Tank Temp
+            self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtCT_1_19 )  # Floor Temp
         else:
-            self.router.publish( EventAgent("TestSolarRunAction"), Events.evtCT_1_85 )  # Tank Over Temp
+            self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtCT_1_30 )  # Floor Over Temp
 
-        self.router.publish( EventAgent("TestSolarRunAction"), Events.evtSecond4 )  # Create a 'second'
+        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtSecond4 )  # Create a 'second'
 
     def display_events(self, e_list):
         lc = 0
@@ -129,7 +118,7 @@ class TestSolarRunAction(unittest.TestCase):
         self._log.debug( "\n\ntestSolarCheckEvent" )
 
         self.loader = EventRouterLoader()
-        self.loader.loadHandlers( getDictFromXmlString(testConfigSolarRun) )
+        self.loader.loadHandlers( getDictFromXmlString(testConfigUnderFloor) )
         self.loader.start()  # all tasks
         self.router = self.loader.getEventRouter()
         self.common_set(pump=False, pipe='Cold', tank='Normal')
@@ -138,8 +127,8 @@ class TestSolarRunAction(unittest.TestCase):
         #self.display_events(TestEventLogger._events)
 
         self.expectNevents( 15 )
-        self.assertEqual( TestEventLogger._events[10].getType(), u'http://id.webbrick.co.uk/events/SolarRun' )
-        self.assertEqual( TestEventLogger._events[10].getSource(), u"testing/SolarRun" )
+        self.assertEqual( TestEventLogger._events[10].getType(), u'http://id.webbrick.co.uk/events/UnderFloor' )
+        self.assertEqual( TestEventLogger._events[10].getSource(), u"testing/UnderFloor" )
         self.assertEqual( TestEventLogger._events[10].getPayload()['set_pump_state'], u"check_run" )
 
 
@@ -147,79 +136,79 @@ class TestSolarRunAction(unittest.TestCase):
         self._log.debug( "\n\ntestSolarStopEvent" )
 
         self.loader = EventRouterLoader()
-        self.loader.loadHandlers( getDictFromXmlString(testConfigSolarRun) )
+        self.loader.loadHandlers( getDictFromXmlString(testConfigUnderFloor) )
         self.loader.start()  # all tasks
         self.router = self.loader.getEventRouter()
         self.common_set(pump=True, pipe='Cold', tank='Normal')
         time.sleep(1)
-        self.router.publish( EventAgent("TestSolarRunAction"), Events.evtSecond5 )  # Create a 'second'
+        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtSecond5 )  # Create a 'second'
         time.sleep(1)
-        self.router.publish( EventAgent("TestSolarRunAction"), Events.evtSecond6 )  # Create a 'second'
+        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtSecond6 )  # Create a 'second'
         time.sleep(1)
-        self.router.publish( EventAgent("TestSolarRunAction"), Events.evtSecond7 )  # Create a 'second'
+        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtSecond7 )  # Create a 'second'
         time.sleep(1)
-        self.router.publish( EventAgent("TestSolarRunAction"), Events.evtCT_1_50 )  # Tank Temp
+        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtCT_1_50 )  # Tank Temp
         time.sleep(1)
 
         #self.display_events(TestEventLogger._events)
 
         self.expectNevents( 21 )
         
-        self.assertEqual( TestEventLogger._events[19].getType(), u'http://id.webbrick.co.uk/events/SolarRun' )
-        self.assertEqual( TestEventLogger._events[19].getSource(), u"testing/SolarRun" )
+        self.assertEqual( TestEventLogger._events[19].getType(), u'http://id.webbrick.co.uk/events/UnderFloor' )
+        self.assertEqual( TestEventLogger._events[19].getSource(), u"testing/UnderFloor" )
         self.assertEqual( TestEventLogger._events[19].getPayload()['set_pump_state'], u"stop" )
 
 
-    def testSolarRunEvent(self):
-        self._log.debug( "\n\ntestSolarRunEvent" )
+    def testUnderFloorEvent(self):
+        self._log.debug( "\n\ntestUnderFloorEvent" )
 
         self.loader = EventRouterLoader()
-        self.loader.loadHandlers( getDictFromXmlString(testConfigSolarRun) )
+        self.loader.loadHandlers( getDictFromXmlString(testConfigUnderFloor) )
         self.loader.start()  # all tasks
         self.router = self.loader.getEventRouter()
         self.common_set(pump=False, pipe='Hot', tank='Normal')
         time.sleep(1)
-        self.router.publish( EventAgent("TestSolarRunAction"), Events.evtCT_0_80 )  # Pipe Temp
+        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtCT_0_80 )  # Pipe Temp
         time.sleep(1)
-        self.router.publish( EventAgent("TestSolarRunAction"), Events.evtSecond5 )  # Create a 'second'
+        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtSecond5 )  # Create a 'second'
         time.sleep(1)
-        self.router.publish( EventAgent("TestSolarRunAction"), Events.evtSecond6 )  # Create a 'second'
+        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtSecond6 )  # Create a 'second'
         time.sleep(1)
-        self.router.publish( EventAgent("TestSolarRunAction"), Events.evtSecond7 )  # Create a 'second'
+        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtSecond7 )  # Create a 'second'
         time.sleep(1)
 
         #self.display_events(TestEventLogger._events)
 
         #self.expectNevents( 21 )
         
-        self.assertEqual( TestEventLogger._events[14].getType(), u'http://id.webbrick.co.uk/events/SolarRun' )
-        self.assertEqual( TestEventLogger._events[14].getSource(), u"testing/SolarRun" )
+        self.assertEqual( TestEventLogger._events[14].getType(), u'http://id.webbrick.co.uk/events/UnderFloor' )
+        self.assertEqual( TestEventLogger._events[14].getSource(), u"testing/UnderFloor" )
         self.assertEqual( TestEventLogger._events[14].getPayload()['set_pump_state'], u"run" )
 
     def testSolarTankHighEvent(self):
         self._log.debug( "\n\ntestSolarTankHighEvent" )
 
         self.loader = EventRouterLoader()
-        self.loader.loadHandlers( getDictFromXmlString(testConfigSolarRun) )
+        self.loader.loadHandlers( getDictFromXmlString(testConfigUnderFloor) )
         self.loader.start()  # all tasks
         self.router = self.loader.getEventRouter()
         self.common_set(pump=True, pipe='Hot', tank='Over')
         time.sleep(1)
-        self.router.publish( EventAgent("TestSolarRunAction"), Events.evtCT_0_80 )  # Pipe Temp
+        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtCT_0_80 )  # Pipe Temp
         time.sleep(1)
-        self.router.publish( EventAgent("TestSolarRunAction"), Events.evtSecond5 )  # Create a 'second'
+        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtSecond5 )  # Create a 'second'
         time.sleep(1)
-        self.router.publish( EventAgent("TestSolarRunAction"), Events.evtSecond6 )  # Create a 'second'
+        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtSecond6 )  # Create a 'second'
         time.sleep(1)
-        self.router.publish( EventAgent("TestSolarRunAction"), Events.evtSecond7 )  # Create a 'second'
+        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtSecond7 )  # Create a 'second'
         time.sleep(1)
 
         #self.display_events(TestEventLogger._events)
 
         self.expectNevents( 21 )
         
-        self.assertEqual( TestEventLogger._events[16].getType(), u'http://id.webbrick.co.uk/events/SolarRun' )
-        self.assertEqual( TestEventLogger._events[16].getSource(), u"testing/SolarRun" )
+        self.assertEqual( TestEventLogger._events[16].getType(), u'http://id.webbrick.co.uk/events/UnderFloor' )
+        self.assertEqual( TestEventLogger._events[16].getSource(), u"testing/UnderFloor" )
         self.assertEqual( TestEventLogger._events[16].getPayload()['set_pump_state'], u"stop" )
 
 
@@ -227,26 +216,26 @@ class TestSolarRunAction(unittest.TestCase):
         self._log.debug( "\n\ntestSolarTankHighEvent" )
 
         self.loader = EventRouterLoader()
-        self.loader.loadHandlers( getDictFromXmlString(testConfigSolarRun) )
+        self.loader.loadHandlers( getDictFromXmlString(testConfigUnderFloor) )
         self.loader.start()  # all tasks
         self.router = self.loader.getEventRouter()
         self.common_set(pump=True, pipe='Hot', tank='Normal')
         time.sleep(1)
-        self.router.publish( EventAgent("TestSolarRunAction"), Events.evtCT_0_80 )  # Pipe Temp
+        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtCT_0_80 )  # Pipe Temp
         time.sleep(1)
-        self.router.publish( EventAgent("TestSolarRunAction"), Events.evtDark )
+        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtDark )
         time.sleep(1)
-        self.router.publish( EventAgent("TestSolarRunAction"), Events.evtSecond5 )  # Create a 'second'
+        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtSecond5 )  # Create a 'second'
         time.sleep(1)
-        self.router.publish( EventAgent("TestSolarRunAction"), Events.evtMinute1 )  # Create a 'minute'
+        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtMinute1 )  # Create a 'minute'
         time.sleep(1)
 
         #self.display_events(TestEventLogger._events)
 
         #self.expectNevents( 25 )
         
-        self.assertEqual( TestEventLogger._events[19].getType(), u'http://id.webbrick.co.uk/events/SolarRun' )
-        self.assertEqual( TestEventLogger._events[19].getSource(), u"testing/SolarRun" )
+        self.assertEqual( TestEventLogger._events[19].getType(), u'http://id.webbrick.co.uk/events/UnderFloor' )
+        self.assertEqual( TestEventLogger._events[19].getSource(), u"testing/UnderFloor" )
         self.assertEqual( TestEventLogger._events[19].getPayload()['set_pump_state'], u"stop" )
 
 
@@ -255,7 +244,7 @@ class TestSolarRunAction(unittest.TestCase):
 # Constructing the suite manually allows control over the order of tests.
 def getTestSuite():
     suite = unittest.TestSuite()
-    suite.addTest(TestSolarRunAction("testSolarRunEvent"))
+    suite.addTest(TestUnderFloorAction("testUnderFloorEvent"))
 
     return suite
 
@@ -275,7 +264,7 @@ def getTestSuite(select="unit"):
         "unit": 
             [ "testSolarCheckEvent" ,
               "testSolarStopEvent" ,
-              "testSolarRunEvent" ,
+              "testUnderFloorEvent" ,
               "testSolarTankHighEvent" ,
               "testSolarNightEvent" ,
             ],
@@ -289,9 +278,9 @@ def getTestSuite(select="unit"):
             [ "testPending"
             ]
         }
-    return TestUtils.getTestSuite(TestSolarRunAction, testdict, select=select)
+    return TestUtils.getTestSuite(TestUnderFloorAction, testdict, select=select)
 
 # Run unit tests directly from command line
 if __name__ == "__main__":
-    TestUtils.runTests("TestSolarRunAction.log", getTestSuite, sys.argv)
+    TestUtils.runTests("TestUnderFloorAction.log", getTestSuite, sys.argv)
 
