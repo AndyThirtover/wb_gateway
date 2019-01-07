@@ -233,20 +233,21 @@ class UnderFloorHeating( BaseHandler ):
         if self._floor_temperature and self._air_temperature:
             # only evaluate if you have both temperatures available
 
-            if (self._air_temperature < (self._target - self._modulation)):
+            if (self._air_temperature > self._target):
+                # we are above target, nothing to do.
+                self.sendUnderFloorHeatingEvent(0,'air target reached')
+                return 
+
+            if (self._floor_temperature > (self._floor_limit - self._modulation)):
                 # within modulation of floor temperaure
                 output = bounds(((self._floor_limit-self._floor_temperature)/self._modulation))
                 self.sendUnderFloorHeatingEvent(int(output*100),'floor modulation')
                 return 
-            elif (self._air_temperature < self._target):
+            elif (self._air_temperature > (self._target - self._modulation)):
                 #within modulation of air temperature
                 output = bounds(((self._target-self._air_temperature)/self._modulation))
                 self.sendUnderFloorHeatingEvent(int(output*100),'air modulation')
                 return 
 
-            if (self._air_temperature > self._target):
-                # we are above target, nothing to do.
-                self.sendUnderFloorHeatingEvent(0,'air target reached')
-                return 
 
 
