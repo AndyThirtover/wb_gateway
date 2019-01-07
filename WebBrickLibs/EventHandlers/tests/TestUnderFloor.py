@@ -81,7 +81,7 @@ class TestUnderFloorAction(unittest.TestCase):
         time.sleep(2)
 
     def expectNevents(self, cnt ):
-        idx = 20
+        idx = cnt + 10  # cope with more events that expected
         while (len(TestEventLogger._events) < cnt) and (idx > 0):
             time.sleep(0.05)
             idx = idx - 1
@@ -150,7 +150,7 @@ class TestUnderFloorAction(unittest.TestCase):
         self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtCT_1_50 )  # Tank Temp
         time.sleep(1)
 
-        #self.display_events(TestEventLogger._events)
+        self.display_events(TestEventLogger._events)
 
         self.expectNevents( 21 )
         
@@ -176,6 +176,8 @@ class TestUnderFloorAction(unittest.TestCase):
         self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtSecond7 )  # Create a 'second'
         time.sleep(1)
 
+        self.display_events(TestEventLogger._events)
+
         
         self.assertEqual( TestEventLogger._events[14].getType(), u'http://id.webbrick.co.uk/events/UnderFloor' )
         self.assertEqual( TestEventLogger._events[14].getSource(), u"testing/UnderFloor" )
@@ -199,7 +201,7 @@ class TestUnderFloorAction(unittest.TestCase):
         self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtSecond7 )  # Create a 'second'
         time.sleep(1)
 
-        #self.display_events(TestEventLogger._events)
+        self.display_events(TestEventLogger._events)
 
         self.expectNevents( 21 )
         
@@ -224,9 +226,10 @@ class TestUnderFloorAction(unittest.TestCase):
         self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtMinute1 )  # Create a 'minute'
         time.sleep(1)
         
+        self.display_events(TestEventLogger._events)
+
         self.assertEqual( TestEventLogger._events[19].getType(), u'http://id.webbrick.co.uk/events/UnderFloor' )
         self.assertEqual( TestEventLogger._events[19].getSource(), u"testing/UnderFloor" )
-        self.assertEqual( TestEventLogger._events[19].getPayload()['set_pump_state'], u"stop" )
 
 
     def testUnderFloorAirMid(self):
@@ -246,6 +249,8 @@ class TestUnderFloorAction(unittest.TestCase):
         time.sleep(1)
         self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtMinute1 )  # Create a 'minute'
         time.sleep(1)
+
+        self.display_events(TestEventLogger._events)
         
         self.assertEqual( TestEventLogger._events[19].getType(), u'http://id.webbrick.co.uk/events/UnderFloor' )
         self.assertEqual( TestEventLogger._events[19].getSource(), u"testing/UnderFloor" )
