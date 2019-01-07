@@ -20,6 +20,10 @@ import EventHandlers.tests.TestEventLogger as TestEventLogger
 import Events
 from Utils import *
 
+_log = logging
+_log.basicConfig(level=logging.DEBUG, filename='TestUnderFloorHeating.log')
+
+
 # Configuration for the tests
 #
 # this test uses the an event test a UnderFloor
