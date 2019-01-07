@@ -95,18 +95,12 @@ class TestUnderFloorAction(unittest.TestCase):
 
         self.assertEqual( len(TestEventLogger._events), cnt)
 
-    def common_set(self,pump=False, air='Cold', floor='Normal' ):
-
-        if air == 'Cold':
-            self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtCT_0_15 )  # Air Temp
-        else:
-            self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtCT_0_25 )  # Air Temp Over expected Target
-        if floor == 'Normal':            
-            self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtCT_1_19 )  # Floor Temp
-        else:
-            self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtCT_1_30 )  # Floor Over Temp
-
+    def common_set(self, air=19, floor=19 ):
+        self.router.publish(EventAgent("TestUnderFloorAction"),makeEvent('http://id.webbrick.co.uk/events/webbrick/CT', 'webbrick/100/CT/0', {'val':air }))
+        self.router.publish(EventAgent("TestUnderFloorAction"),makeEvent('http://id.webbrick.co.uk/events/webbrick/CT', 'webbrick/100/CT/1', {'val':floor }))
         self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtMinute10 )  # Create a minute that forces a check
+
+
 
 
     def display_events(self, e_list):
@@ -124,7 +118,7 @@ class TestUnderFloorAction(unittest.TestCase):
         self.loader.loadHandlers( getDictFromXmlString(testConfigUnderFloor) )
         self.loader.start()  # all tasks
         self.router = self.loader.getEventRouter()
-        self.common_set(air='Cold', floor='Normal')
+        self.common_set(air=15, floor=1)
         time.sleep(1)
 
         self.display_events(TestEventLogger._events)
@@ -142,11 +136,7 @@ class TestUnderFloorAction(unittest.TestCase):
         self.loader.loadHandlers( getDictFromXmlString(testConfigUnderFloor) )
         self.loader.start()  # all tasks
         self.router = self.loader.getEventRouter()
-        self.common_set(air='Cold', floor='Normal')
-
-        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtSecond7 )  # Create a 'second'
-        time.sleep(1)
-        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtCT_1_50 )  # High Floor
+        self.common_set(air=18, floor=40)
         time.sleep(1)
 
         self.display_events(TestEventLogger._events)
@@ -164,7 +154,7 @@ class TestUnderFloorAction(unittest.TestCase):
         self.loader.loadHandlers( getDictFromXmlString(testConfigUnderFloor) )
         self.loader.start()  # all tasks
         self.router = self.loader.getEventRouter()
-        self.common_set(air='Hot', floor='Normal')
+        self.common_set(air=21, floor=20)
         time.sleep(1)
 
         self.display_events(TestEventLogger._events)
@@ -182,9 +172,7 @@ class TestUnderFloorAction(unittest.TestCase):
         self.loader.loadHandlers( getDictFromXmlString(testConfigUnderFloor) )
         self.loader.start()  # all tasks
         self.router = self.loader.getEventRouter()
-        self.common_set(air='Hot', floor='Over')
-        time.sleep(1)
-        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtCT_0_80 )  # Pipe Temp
+        self.common_set(air=18, floor=40)
         time.sleep(1)
 
         self.display_events(TestEventLogger._events)
@@ -202,9 +190,7 @@ class TestUnderFloorAction(unittest.TestCase):
         self.loader.loadHandlers( getDictFromXmlString(testConfigUnderFloor) )
         self.loader.start()  # all tasks
         self.router = self.loader.getEventRouter()
-        self.common_set(air='Cold', floor='Normal')
-        time.sleep(1)
-        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtCT_1_27 )  # Floor Temp
+        self.common_set(air=15, floor=27)
         time.sleep(1)
         
         self.display_events(TestEventLogger._events)
@@ -220,9 +206,7 @@ class TestUnderFloorAction(unittest.TestCase):
         self.loader.loadHandlers( getDictFromXmlString(testConfigUnderFloor) )
         self.loader.start()  # all tasks
         self.router = self.loader.getEventRouter()
-        self.common_set(air='Cold', floor='Normal')
-        time.sleep(1)
-        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtCT_0_19 )  # Air Temp
+        self.common_set(air=19, floor=23)
         time.sleep(1)
 
         self.display_events(TestEventLogger._events)
