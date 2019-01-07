@@ -29,7 +29,7 @@ from EventHandlers.Utils import *
 # make logging global to module.
 #_log = None
 _log = logging
-_log.basicConfig(level=logging.DEBUG, filename='/var/log/webbrick/UnderFloorHeating.log')
+_log.basicConfig(level=logging.DEBUG, filename='UnderFloorHeating.log')
 
 CONFIG_TYPE = "http://id.webbrick.co.uk/events/config/get"
 
@@ -108,10 +108,10 @@ class UnderFloorHeating( BaseHandler ):
 
         self._log.debug(cfgDict)
 
-        if cfgDict.has_key('run'):
-            self._enable_event = cfgDict['run']
-        if cfgDict.has_key('stop'):
-            self._check_event = cfgDict['stop']
+        if cfgDict.has_key('run_event'):
+            self._enable_event = cfgDict['run_event']
+        if cfgDict.has_key('stop_event'):
+            self._check_event = cfgDict['stop_event']
         if cfgDict.has_key('air_temperature'):
             self._air_event = cfgDict['air_temperature']
         if cfgDict.has_key('floor_temperature'):
