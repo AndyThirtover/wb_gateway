@@ -46,8 +46,8 @@ testConfigUnderFloor = """<?xml version="1.0" encoding="utf-8"?>
          <zone_temperature type='http://id.webbrick.co.uk/zones/zone' source='zone7/state' />  
          <run_event type='http://id.webbrick.co.uk/zones/zone' source='zone999/run' />  
          <stop_event type='http://id.webbrick.co.uk/zones/zone' source='zone999/stop' />  
-         <air_temperature type='http://id.webbrick.co.uk/events/webbrick/CT' source='webbrick/999/CT/0' />  
-         <floor_temperature type='http://id.webbrick.co.uk/events/webbrick/CT' source='webbrick/999/CT/1' />  
+         <air_temperature type='http://id.webbrick.co.uk/events/webbrick/CT' source='webbrick/100/CT/0' />  
+         <floor_temperature type='http://id.webbrick.co.uk/events/webbrick/CT' source='webbrick/100/CT/1' />  
 
         <eventtype type="http://id.webbrick.co.uk/events/UnderFloor">
             <eventsource source="testing/UnderFloor">
