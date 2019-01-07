@@ -11,8 +11,8 @@
 #        <zone_temperature type='http://id.webbrick.co.uk/zones/zone' source='zone7/state' />  
 #        <run_event type='http://id.webbrick.co.uk/zones/zone' source='zone7/run' />  
 #        <stop_event type='http://id.webbrick.co.uk/zones/zone' source='zone7/stop' />  
-#        <air_temperature type='http://id.webbrick.co.uk/events/webbrick/CT' source='webbrick/999/CT/0' />  
-#        <floor_temperature type='http://id.webbrick.co.uk/events/webbrick/CT' source='webbrick/999/CT/1' />  
+#        <air_temperature type='http://id.webbrick.co.uk/events/webbrick/CT' source='webbrick/100/CT/0' />  
+#        <floor_temperature type='http://id.webbrick.co.uk/events/webbrick/CT' source='webbrick/100/CT/1' />  
 #   </eventInterface>
 
 import logging
@@ -247,7 +247,10 @@ class UnderFloorHeating( BaseHandler ):
                 #within modulation of air temperature
                 output = bounds(((self._target-self._air_temperature)/self._modulation))
                 self.sendUnderFloorHeatingEvent(int(output*100),'air modulation')
-                return 
+                return
+            else:
+                # must be in normal demand
+                self.sendUnderFloorHeatingEvent(100,'full demand')
 
 
 
