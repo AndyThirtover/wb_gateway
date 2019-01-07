@@ -202,7 +202,7 @@ class TestUnderFloorAction(unittest.TestCase):
         self.loader.loadHandlers( getDictFromXmlString(testConfigUnderFloor) )
         self.loader.start()  # all tasks
         self.router = self.loader.getEventRouter()
-        self.common_set(air='Cool', floor='Normal')
+        self.common_set(air='Cold', floor='Normal')
         time.sleep(1)
         self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtCT_1_27 )  # Floor Temp
         time.sleep(1)
@@ -220,7 +220,7 @@ class TestUnderFloorAction(unittest.TestCase):
         self.loader.loadHandlers( getDictFromXmlString(testConfigUnderFloor) )
         self.loader.start()  # all tasks
         self.router = self.loader.getEventRouter()
-        self.common_set(air='Cool', floor='Normal')
+        self.common_set(air='Cold', floor='Normal')
         time.sleep(1)
         self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtCT_0_19 )  # Air Temp
         time.sleep(1)
