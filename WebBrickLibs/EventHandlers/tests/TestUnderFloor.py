@@ -143,14 +143,10 @@ class TestUnderFloorAction(unittest.TestCase):
         self.loader.start()  # all tasks
         self.router = self.loader.getEventRouter()
         self.common_set(air='Cold', floor='Normal')
-        time.sleep(1)
-        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtSecond5 )  # Create a 'second'
-        time.sleep(1)
-        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtSecond6 )  # Create a 'second'
-        time.sleep(1)
+
         self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtSecond7 )  # Create a 'second'
         time.sleep(1)
-        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtCT_1_50 )  # Tank Temp
+        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtCT_1_50 )  # High Floor
         time.sleep(1)
 
         self.display_events(TestEventLogger._events)
@@ -170,21 +166,14 @@ class TestUnderFloorAction(unittest.TestCase):
         self.router = self.loader.getEventRouter()
         self.common_set(air='Hot', floor='Normal')
         time.sleep(1)
-        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtCT_0_80 )  # Pipe Temp
-        time.sleep(1)
-        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtSecond5 )  # Create a 'second'
-        time.sleep(1)
-        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtSecond6 )  # Create a 'second'
-        time.sleep(1)
-        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtSecond7 )  # Create a 'second'
-        time.sleep(1)
 
         self.display_events(TestEventLogger._events)
-
         
         self.assertEqual( TestEventLogger._events[14].getType(), u'http://id.webbrick.co.uk/events/UnderFloor' )
         self.assertEqual( TestEventLogger._events[14].getSource(), u"testing/UnderFloor" )
         self.assertEqual( TestEventLogger._events[14].getPayload()['set_pump_state'], u"run" )
+
+
 
     def testUnderFloorHighEvent(self):
         self._log.debug(sys._getframe().f_code.co_name)
@@ -197,12 +186,6 @@ class TestUnderFloorAction(unittest.TestCase):
         time.sleep(1)
         self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtCT_0_80 )  # Pipe Temp
         time.sleep(1)
-        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtSecond5 )  # Create a 'second'
-        time.sleep(1)
-        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtSecond6 )  # Create a 'second'
-        time.sleep(1)
-        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtSecond7 )  # Create a 'second'
-        time.sleep(1)
 
         self.display_events(TestEventLogger._events)
 
@@ -210,7 +193,6 @@ class TestUnderFloorAction(unittest.TestCase):
         
         self.assertEqual( TestEventLogger._events[16].getType(), u'http://id.webbrick.co.uk/events/UnderFloor' )
         self.assertEqual( TestEventLogger._events[16].getSource(), u"testing/UnderFloor" )
-        self.assertEqual( TestEventLogger._events[16].getPayload()['set_pump_state'], u"stop" )
 
 
     def testUnderFloorMid(self):
@@ -223,10 +205,6 @@ class TestUnderFloorAction(unittest.TestCase):
         self.common_set(air='Cool', floor='Normal')
         time.sleep(1)
         self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtCT_1_27 )  # Floor Temp
-        time.sleep(1)
-        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtSecond5 )  # Create a 'second'
-        time.sleep(1)
-        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtMinute1 )  # Create a 'minute'
         time.sleep(1)
         
         self.display_events(TestEventLogger._events)
@@ -246,18 +224,11 @@ class TestUnderFloorAction(unittest.TestCase):
         time.sleep(1)
         self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtCT_0_19 )  # Air Temp
         time.sleep(1)
-        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtCT_1_25 )  # Floor Temp
-        time.sleep(1)
-        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtSecond5 )  # Create a 'second'
-        time.sleep(1)
-        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtMinute1 )  # Create a 'minute'
-        time.sleep(1)
 
         self.display_events(TestEventLogger._events)
         
         self.assertEqual( TestEventLogger._events[19].getType(), u'http://id.webbrick.co.uk/events/UnderFloor' )
         self.assertEqual( TestEventLogger._events[19].getSource(), u"testing/UnderFloor" )
-        self.assertEqual( TestEventLogger._events[19].getPayload()['set_pump_state'], u"stop" )
 
 
 # Code to run unit tests directly from command line.
