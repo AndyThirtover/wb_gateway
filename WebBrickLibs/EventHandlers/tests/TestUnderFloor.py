@@ -125,7 +125,7 @@ class TestUnderFloorAction(unittest.TestCase):
         self.loader.loadHandlers( getDictFromXmlString(testConfigUnderFloor) )
         self.loader.start()  # all tasks
         self.router = self.loader.getEventRouter()
-        self.common_set(pump=False, air='Cold', floor='Normal')
+        self.common_set(air='Cold', floor='Normal')
         time.sleep(1)
 
         self.display_events(TestEventLogger._events)
@@ -143,7 +143,7 @@ class TestUnderFloorAction(unittest.TestCase):
         self.loader.loadHandlers( getDictFromXmlString(testConfigUnderFloor) )
         self.loader.start()  # all tasks
         self.router = self.loader.getEventRouter()
-        self.common_set(pump=True, air='Cold', floor='Normal')
+        self.common_set(air='Cold', floor='Normal')
         time.sleep(1)
         self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtSecond5 )  # Create a 'second'
         time.sleep(1)
@@ -169,7 +169,7 @@ class TestUnderFloorAction(unittest.TestCase):
         self.loader.loadHandlers( getDictFromXmlString(testConfigUnderFloor) )
         self.loader.start()  # all tasks
         self.router = self.loader.getEventRouter()
-        self.common_set(pump=False, air='Hot', floor='Normal')
+        self.common_set(air='Hot', floor='Normal')
         time.sleep(1)
         self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtCT_0_80 )  # Pipe Temp
         time.sleep(1)
@@ -194,7 +194,7 @@ class TestUnderFloorAction(unittest.TestCase):
         self.loader.loadHandlers( getDictFromXmlString(testConfigUnderFloor) )
         self.loader.start()  # all tasks
         self.router = self.loader.getEventRouter()
-        self.common_set(pump=True, air='Hot', floor='Over')
+        self.common_set(air='Hot', floor='Over')
         time.sleep(1)
         self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtCT_0_80 )  # Pipe Temp
         time.sleep(1)
@@ -221,7 +221,7 @@ class TestUnderFloorAction(unittest.TestCase):
         self.loader.loadHandlers( getDictFromXmlString(testConfigUnderFloor) )
         self.loader.start()  # all tasks
         self.router = self.loader.getEventRouter()
-        self.common_set(pump=True, air='Cool', floor='Normal')
+        self.common_set(air='Cool', floor='Normal')
         time.sleep(1)
         self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtCT_1_27 )  # Floor Temp
         time.sleep(1)
@@ -243,7 +243,7 @@ class TestUnderFloorAction(unittest.TestCase):
         self.loader.loadHandlers( getDictFromXmlString(testConfigUnderFloor) )
         self.loader.start()  # all tasks
         self.router = self.loader.getEventRouter()
-        self.common_set(pump=True, air='Cool', floor='Normal')
+        self.common_set(air='Cool', floor='Normal')
         time.sleep(1)
         self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtCT_0_19 )  # Air Temp
         time.sleep(1)
@@ -259,9 +259,6 @@ class TestUnderFloorAction(unittest.TestCase):
         self.assertEqual( TestEventLogger._events[19].getType(), u'http://id.webbrick.co.uk/events/UnderFloor' )
         self.assertEqual( TestEventLogger._events[19].getSource(), u"testing/UnderFloor" )
         self.assertEqual( TestEventLogger._events[19].getPayload()['set_pump_state'], u"stop" )
-
-
-
 
 
 # Code to run unit tests directly from command line.

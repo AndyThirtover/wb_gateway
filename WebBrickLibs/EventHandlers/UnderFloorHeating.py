@@ -232,10 +232,6 @@ class UnderFloorHeating( BaseHandler ):
             self._state = 'over_temperature'
             return # nothing more to do
 
-        if self._state != 'running':
-            self.sendUnderFloorHeatingEvent(0,'stopped')
-            return # nothing to do
-
         if self._floor_temperature and self._air_temperature:
             # only evaluate if you have both temperatures available
 
