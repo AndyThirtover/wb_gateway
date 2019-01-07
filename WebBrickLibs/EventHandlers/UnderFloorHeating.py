@@ -186,7 +186,8 @@ class UnderFloorHeating( BaseHandler ):
  
         elif self._run_event and inEvent.getType() == self._run_event['type'] and inEvent.getSource() == self._run_event['source']:
             self._state = 'running'
-            self.Evaluate_Conditions('run')
+            self._target = float(inEvent.getPayload()['targetsetpoint'])
+            self.Evaluate_Conditions('new target setpoint')
 
         elif self._stop_event and inEvent.getType() == self._stop_event['type'] and inEvent.getSource() == self._stop_event['source']:
             self._state = 'stopped'
@@ -194,13 +195,11 @@ class UnderFloorHeating( BaseHandler ):
  
         elif self._air_event and inEvent.getType() == self._air_event['type'] and inEvent.getSource() == self._air_event['source']:
             self._air_temperature = float(inEvent.getPayload()['val'])
-            self._log.debug('Changing Air Temperature to %s' % self._air_temperature)
             self.Evaluate_Conditions('air_temperature')
             return makeDeferred(StatusVal.OK)    
 
         elif self._floor_event and inEvent.getType() == self._floor_event['type'] and inEvent.getSource() == self._floor_event['source']:
             self._floor_temperature = float(inEvent.getPayload()['val'])
-            self._log.debug('Changing Floor Temperature to %s' % self._floor_temperature)
             self.Evaluate_Conditions('floor_temperature')
             return makeDeferred(StatusVal.OK)    
 
@@ -219,11 +218,10 @@ class UnderFloorHeating( BaseHandler ):
 
     def Evaluate_Conditions(self, why):
         #To get here we should running, and have air and floor temperatures available
-        self._log.debug('Here we go with evaluation, reason %s, air %s, floor %s, modulation %s' % (why, self._air_temperature, self._floor_temperature, self._modulation))
-        # Lets do it
+        self._log.debug('Here we go with evaluation, reason %s, target %s, air %s, floor %s, modulation %s' % 
+            (why, self._target, self._air_temperature, self._floor_temperature, self._modulation))
 
         if self._floor_temperature > self._floor_limit:
-            self._log.debug('Set floor to stop OVERTEMPERATURE %s' % self._floor_temperature)
             self.sendUnderFloorHeatingEvent(0,'over temperature')
             self._state = 'over_temperature'
             return # nothing more to do
@@ -247,6 +245,4 @@ class UnderFloorHeating( BaseHandler ):
             else:
                 # must be in normal demand
                 self.sendUnderFloorHeatingEvent(100,'full demand')
-
-
 

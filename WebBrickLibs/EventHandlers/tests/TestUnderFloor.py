@@ -44,7 +44,7 @@ testConfigUnderFloor = """<?xml version="1.0" encoding="utf-8"?>
 
     <eventInterface  module='EventHandlers.UnderFloorHeating' name='UnderFloorHeating' >
          <zone_temperature type='http://id.webbrick.co.uk/zones/zone' source='zone7/state' />  
-         <run_event type='http://id.webbrick.co.uk/zones/zone' source='zone999/run' />  
+         <run_event type='http://id.webbrick.co.uk/zones/zone' source='zone999/state' />  
          <stop_event type='http://id.webbrick.co.uk/zones/zone' source='zone999/stop' />  
          <air_temperature type='http://id.webbrick.co.uk/events/webbrick/CT' source='webbrick/100/CT/0' />  
          <floor_temperature type='http://id.webbrick.co.uk/events/webbrick/CT' source='webbrick/100/CT/1' />  
@@ -95,7 +95,11 @@ class TestUnderFloorAction(unittest.TestCase):
 
         self.assertEqual( len(TestEventLogger._events), cnt)
 
-    def common_set(self, air=19, floor=19 ):
+    def common_set(self, target=20, air=19, floor=19 ):
+        """
+        http://id.webbrick.co.uk/zones/zone,zone7/state,{'status': 'Demand', 'actuatorstate': 2, 'manualsetpoint': None, 'zoneTemp': 16.300000000000001, 'weather1': 'Run', 'weather2': 'HoldOff', 'weather3': 'Run', 'weathercompensation': 1, 'cmdsource': 'Schedule', 'enabled': 1, 'wcselect': 1, 'schedulesetpoint': 19.0, 'state': 2, 'targetsetpoint': 19.0, 'zonesource': u'Electic UFH', 'minzonetemp': 9.0, 'occupied': 1, 'zoneenabled': '', 'followoccupancy': 0}
+        """
+        self.router.publish(EventAgent("TestUnderFloorAction"),makeEvent('http://id.webbrick.co.uk/zones/zone', 'zone999/state', {'targetsetpoint':target }))
         self.router.publish(EventAgent("TestUnderFloorAction"),makeEvent('http://id.webbrick.co.uk/events/webbrick/CT', 'webbrick/100/CT/0', {'val':air }))
         self.router.publish(EventAgent("TestUnderFloorAction"),makeEvent('http://id.webbrick.co.uk/events/webbrick/CT', 'webbrick/100/CT/1', {'val':floor }))
         self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtMinute10 )  # Create a minute that forces a check
