@@ -94,9 +94,9 @@ class UnderFloorHeating( BaseHandler ):
             self._log.debug ("-----------------------------------------")
         self._localRouter.unsubscribe( self, 'http://id.webbrick.co.uk/events/config/get' )
         self._localRouter.unsubscribe( self, 'http://id.webbrick.co.uk/events/time/minute', 'time/minute' )
-        if self._enable_event :
+        if self._run_event :
             self._localRouter.unsubscribe( self, self._run_event['type'] )
-        if self._check_event :
+        if self._stop_event :
             self._localRouter.unsubscribe( self, self._stop_event['type'] )
 
         self.unSubscribeAll()
