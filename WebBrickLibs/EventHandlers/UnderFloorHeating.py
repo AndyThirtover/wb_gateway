@@ -23,7 +23,6 @@ from EventLib.Status          import StatusVal
 from EventLib.SyncDeferred    import makeDeferred
 
 from EventHandlers.BaseHandler import BaseHandler
-
 from EventHandlers.Utils import *
 
 # make logging global to module.
@@ -172,16 +171,6 @@ class UnderFloorHeating( BaseHandler ):
                 self._check_time = int(inEvent.getPayload()['val'])'''
 
 
-    def bounds(input):
-        input = float(input)
-        if input > 1.0:
-            return 1.0
-        if input < 0.0:
-            return 0.0
-        return input
-
-
-
     def doHandleEvent( self, handler, inEvent ):
 
         self._log.debug('inEvent handled %s with %s' % (inEvent.getType(), inEvent.getSource()))
@@ -219,6 +208,15 @@ class UnderFloorHeating( BaseHandler ):
             return super(UnderFloorHeating,self).doHandleEvent( handler, inEvent)
             
 
+    def bounds(input):
+        input = float(input)
+        if input > 1.0:
+            return 1.0
+        if input < 0.0:
+            return 0.0
+        return input
+
+
     def Evaluate_Conditions(self, why):
         #To get here we should running, and have air and floor temperatures available
         self._log.debug('Here we go with evaluation, reason %s, air %s, floor %s, modulation %s' % (why, self._air_temperature, self._floor_temperature, self._modulation))
@@ -240,11 +238,11 @@ class UnderFloorHeating( BaseHandler ):
 
             if (self._floor_temperature > (self._floor_limit - self._modulation)):
                 # within modulation of floor temperaure
-                output = bounds(((self._floor_limit-self._floor_temperature)/self._modulation))
+                output = self.bounds(((self._floor_limit-self._floor_temperature)/self._modulation))
                 self.sendUnderFloorHeatingEvent(int(output*100),'floor modulation')
             elif (self._air_temperature > (self._target - self._modulation)):
                 #within modulation of air temperature
-                output = bounds(((self._target-self._air_temperature)/self._modulation))
+                output = self.bounds(((self._target-self._air_temperature)/self._modulation))
                 self.sendUnderFloorHeatingEvent(int(output*100),'air modulation')
             else:
                 # must be in normal demand
