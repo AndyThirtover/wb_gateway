@@ -54,12 +54,12 @@ class UnderFloorHeating( BaseHandler ):
         self._underfloor_run_evt_type = 'http://id.webbrick.co.uk/events/UnderFloorHeating'
         self._underfloor_run_evt_source = self._log.name
 
-        self._modulation = 2.0     # the range over which we will modulate
-        self._target = 20.0        #  a default target temperature        
+        self._modulation = float(2.0)     # the range over which we will modulate
+        self._target = float(20.0)        #  a default target temperature        
 
         self._floor_event = None
         self._floor_temperature = None
-        self._floor_limit = 28 # floor should not go beyond 28 DegC
+        self._floor_limit = float(28) # floor should not go beyond 28 DegC
 
         self._air_event = None
         self._air_temperature = None
