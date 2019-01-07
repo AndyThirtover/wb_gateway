@@ -59,7 +59,7 @@ class UnderFloorHeating( BaseHandler ):
 
         self._floor_event = None
         self._floor_temperature = None
-        self._floor_limit = float(28) # floor should not go beyond 28 DegC
+        self._floor_limit = float(28.0) # floor should not go beyond 28 DegC
 
         self._air_event = None
         self._air_temperature = None
@@ -221,7 +221,7 @@ class UnderFloorHeating( BaseHandler ):
 
     def Evaluate_Conditions(self, why):
         #To get here we should running, and have air and floor temperatures available
-        self._log.debug('Here we go with evaluation, reason %s, air %s, floor %s' % (why, self._air_temperature, self._floor_temperature))
+        self._log.debug('Here we go with evaluation, reason %s, air %s, floor %s, modulation %s' % (why, self._air_temperature, self._floor_temperature, self._modulation))
         # Lets do it
 
         if self._floor_temperature > self._floor_limit:
@@ -242,12 +242,10 @@ class UnderFloorHeating( BaseHandler ):
                 # within modulation of floor temperaure
                 output = bounds(((self._floor_limit-self._floor_temperature)/self._modulation))
                 self.sendUnderFloorHeatingEvent(int(output*100),'floor modulation')
-                return 
             elif (self._air_temperature > (self._target - self._modulation)):
                 #within modulation of air temperature
                 output = bounds(((self._target-self._air_temperature)/self._modulation))
                 self.sendUnderFloorHeatingEvent(int(output*100),'air modulation')
-                return
             else:
                 # must be in normal demand
                 self.sendUnderFloorHeatingEvent(100,'full demand')
