@@ -85,7 +85,7 @@ class TestUnderFloorAction(unittest.TestCase):
         time.sleep(2)
 
     def expectNevents(self, cnt ):
-        idx = cnt + 10  # cope with more events that expected
+        idx = cnt + 5  # cope with more events that expected
         while (len(TestEventLogger._events) < cnt) and (idx > 0):
             time.sleep(0.05)
             idx = idx - 1
@@ -96,20 +96,18 @@ class TestUnderFloorAction(unittest.TestCase):
         self.assertEqual( len(TestEventLogger._events), cnt)
 
     def common_set(self,pump=False, air='Cold', floor='Normal' ):
-        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtSecond0 )  # Create a 'second'
-        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtSecond1 )  # Create a 'second'
-        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtSecond2 )  # Create a 'second'
-        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtMinute10 )  # Create a minute that forces a check
+
         if air == 'Cold':
             self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtCT_0_15 )  # Air Temp
         else:
-            self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtCT_0_25 )  # Air Temp
+            self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtCT_0_25 )  # Air Temp Over expected Target
         if floor == 'Normal':            
             self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtCT_1_19 )  # Floor Temp
         else:
             self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtCT_1_30 )  # Floor Over Temp
 
-        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtSecond4 )  # Create a 'second'
+        self.router.publish( EventAgent("TestUnderFloorAction"), Events.evtMinute10 )  # Create a minute that forces a check
+
 
     def display_events(self, e_list):
         lc = 0
@@ -117,6 +115,7 @@ class TestUnderFloorAction(unittest.TestCase):
             print "Event %s Type %s  Source %s Payload %s" % (lc,  e.getType(), e.getSource(), e.getPayload())
             lc += 1
 
+    # -----------------------------------------------------------------------------------------------------------------------------------
     # Actual tests follow
     def testUnderFloorStart(self):
         self._log.debug(sys._getframe().f_code.co_name)
