@@ -109,9 +109,9 @@ class UnderFloorHeating( BaseHandler ):
         self._log.debug(cfgDict)
 
         if cfgDict.has_key('run_event'):
-            self._enable_event = cfgDict['run_event']
+            self._run_event = cfgDict['run_event']
         if cfgDict.has_key('stop_event'):
-            self._check_event = cfgDict['stop_event']
+            self._stop_event = cfgDict['stop_event']
         if cfgDict.has_key('air_temperature'):
             self._air_event = cfgDict['air_temperature']
         if cfgDict.has_key('floor_temperature'):
