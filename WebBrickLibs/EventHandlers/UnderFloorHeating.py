@@ -208,7 +208,7 @@ class UnderFloorHeating( BaseHandler ):
             return super(UnderFloorHeating,self).doHandleEvent( handler, inEvent)
             
 
-    def bounds(input):
+    def bounds(self, input):
         input = float(input)
         if input > 1.0:
             return 1.0
