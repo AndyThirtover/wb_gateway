@@ -42,7 +42,7 @@ testConfigUnderFloor = """<?xml version="1.0" encoding="utf-8"?>
         </eventtype>
     </eventInterface>
 
-    <eventInterface  module='EventHandlers.UnderFloor' name='UnderFloor' >
+    <eventInterface  module='EventHandlers.UnderFloorHeating' name='UnderFloorHeating' >
          <zone_temperature type='http://id.webbrick.co.uk/zones/zone' source='zone7/state' />  
          <run_event type='http://id.webbrick.co.uk/zones/zone' source='zone999/run' />  
          <stop_event type='http://id.webbrick.co.uk/zones/zone' source='zone999/stop' />  
