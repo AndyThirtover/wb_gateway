@@ -221,9 +221,7 @@ class UnderFloorHeating( BaseHandler ):
 
     def Evaluate_Conditions(self, why):
         #To get here we should running, and have air and floor temperatures available
-        self._log.debug('Here we go with evaluation, reason %s' % why)
-        self._log.debug('Floor_Temperature : %s' % self._floor_temperature)
-        self._log.debug('Air_Temperature : %s' % self._air_temperature)
+        self._log.debug('Here we go with evaluation, reason %s, air %s, floor %s' % why, self._air_temperature, self._floor_temperature)
         # Lets do it
 
         if self._floor_temperature > self._floor_limit:
