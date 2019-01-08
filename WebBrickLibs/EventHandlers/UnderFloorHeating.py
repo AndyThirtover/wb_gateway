@@ -119,7 +119,9 @@ class UnderFloorHeating( BaseHandler ):
 
         # now deal with modulation values
         if cfgDict.has_key('floor_modulation'):
-            self._floor_modulation =  float(cfgDict['floor_modulation'].getPayload()['val'])
+            self._floor_modulation =  float(cfgDict['floor_modulation']['val'])
+        if cfgDict.has_key('air_modulation'):
+            self._air_modulation =  float(cfgDict['air_modulation']['val'])
 
         if cfgDict.has_key('eventtype'):
             if cfgDict['eventtype'].has_key('type'):
