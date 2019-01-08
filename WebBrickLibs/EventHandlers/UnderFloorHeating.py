@@ -37,7 +37,7 @@ class UnderFloorHeating( BaseHandler ):
     UnderFloorHeating class that subscribes to events and generates UnderFloorHeating events.
     It's function is to modulate the power of a heating element based on floor temperature and air temperature.
     Floor Temperature should never exceed floor_limit and the system should modulate as air temperature is approached.
-    _modulation sets the range over which modulation will occur, below this value 100% power will be supplied.
+    air/floor_modulation sets the range over which modulation will occur, below this value 100% power will be supplied.
     """
     
     def __init__ (self, localRouter):
@@ -133,7 +133,8 @@ class UnderFloorHeating( BaseHandler ):
            
         if self._debug:
             self._log.debug ("--------- Config Debug ----------------")
-            self._log.debug ("Modulation %s" % str(self._modulation))    
+            self._log.debug ("Floor Mod %s" % str(self.floor_modulation))    
+            self._log.debug ("Air Mod %s" % str(self.air_modulation))    
             self._log.debug ("Floor Limit %s" % str(self._floor_limit))    
             self._log.debug ("Run Event %s" % str(self._run_event))
             self._log.debug ("Stop Event %s" % str(self._stop_event))
@@ -225,8 +226,8 @@ class UnderFloorHeating( BaseHandler ):
 
     def Evaluate_Conditions(self, why):
         #To get here we should running, and have air and floor temperatures available
-        self._log.debug('Here we go with evaluation, reason %s, target %s, air %s, floor %s, modulation %s' % 
-            (why, self._target, self._air_temperature, self._floor_temperature, self._modulation))
+        self._log.debug('Here we go with evaluation, reason %s, target %s, air %s, floor %s, floor mod %s, air mod %s' % 
+            (why, self._target, self._air_temperature, self._floor_temperature, self._floor_modulation, self.air_modulation))
 
         if self._floor_temperature > self._floor_limit:
             self.sendUnderFloorHeatingEvent(0,'over temperature')
