@@ -133,8 +133,8 @@ class UnderFloorHeating( BaseHandler ):
            
         if self._debug:
             self._log.debug ("--------- Config Debug ----------------")
-            self._log.debug ("Floor Mod %s" % str(self.floor_modulation))    
-            self._log.debug ("Air Mod %s" % str(self.air_modulation))    
+            self._log.debug ("Floor Mod %s" % str(self._floor_modulation))    
+            self._log.debug ("Air Mod %s" % str(self._air_modulation))    
             self._log.debug ("Floor Limit %s" % str(self._floor_limit))    
             self._log.debug ("Run Event %s" % str(self._run_event))
             self._log.debug ("Stop Event %s" % str(self._stop_event))
