@@ -227,7 +227,7 @@ class UnderFloorHeating( BaseHandler ):
     def Evaluate_Conditions(self, why):
         #To get here we should running, and have air and floor temperatures available
         self._log.debug('Here we go with evaluation, reason %s, target %s, air %s, floor %s, floor mod %s, air mod %s' % 
-            (why, self._target, self._air_temperature, self._floor_temperature, self._floor_modulation, self.air_modulation))
+            (why, self._target, self._air_temperature, self._floor_temperature, self._floor_modulation, self._air_modulation))
 
         if self._floor_temperature > self._floor_limit:
             self.sendUnderFloorHeatingEvent(0,'over temperature')
