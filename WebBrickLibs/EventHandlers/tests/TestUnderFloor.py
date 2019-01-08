@@ -205,7 +205,7 @@ class TestUnderFloorAction(unittest.TestCase):
         self.loader.loadHandlers( getDictFromXmlString(testConfigUnderFloor) )
         self.loader.start()  # all tasks
         self.router = self.loader.getEventRouter()
-        self.common_set(air=19, floor=23)
+        self.common_set(air=19.5, floor=23)
         time.sleep(1)
 
         self.assertEqual( TestEventLogger._events[2].getType(), u'http://id.webbrick.co.uk/events/UnderFloor' )

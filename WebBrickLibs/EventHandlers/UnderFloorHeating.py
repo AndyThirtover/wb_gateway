@@ -2,7 +2,7 @@
 # Licenced under 3 clause BSD licence 
 #
 #
-#  Solar Control System
+#  Variable Power Underfloor heatinf control
 #
 #  Andy Harris --- 1st January 2019
 #
