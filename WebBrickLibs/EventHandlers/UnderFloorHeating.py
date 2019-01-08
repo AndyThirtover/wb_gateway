@@ -53,7 +53,8 @@ class UnderFloorHeating( BaseHandler ):
         self._underfloor_run_evt_type = 'http://id.webbrick.co.uk/events/UnderFloorHeating'
         self._underfloor_run_evt_source = self._log.name
 
-        self._modulation = float(2.0)     # the range over which we will modulate
+        self._floor_modulation = float(2.0)     # the range over which we will modulate
+        self._air_modulation = float(2.0)     # the range over which we will modulate
         self._target = float(20.0)        #  a default target temperature        
 
         self._floor_event = None
@@ -115,6 +116,10 @@ class UnderFloorHeating( BaseHandler ):
             self._air_event = cfgDict['air_temperature']
         if cfgDict.has_key('floor_temperature'):
             self._floor_event = cfgDict['floor_temperature']
+
+        # now deal with modulation values
+        if cfgDict.has_key('floor_modulation'):
+            self._floor_modulation =  float(cfgDict['floor_modulation'].getPayload()['val'])
 
         if cfgDict.has_key('eventtype'):
             if cfgDict['eventtype'].has_key('type'):
@@ -234,13 +239,13 @@ class UnderFloorHeating( BaseHandler ):
                 self.sendUnderFloorHeatingEvent(0,'air target reached')
                 return 
 
-            if (self._floor_temperature > (self._floor_limit - self._modulation)):
+            if (self._floor_temperature > (self._floor_limit - self._floor_modulation)):
                 # within modulation of floor temperaure
-                output = self.bounds(((self._floor_limit-self._floor_temperature)/self._modulation))
+                output = self.bounds(((self._floor_limit-self._floor_temperature)/self._floor_modulation))
                 self.sendUnderFloorHeatingEvent(int(output*100),'floor modulation')
-            elif (self._air_temperature > (self._target - self._modulation)):
+            elif (self._air_temperature > (self._target - self._air_modulation)):
                 #within modulation of air temperature
-                output = self.bounds(((self._target-self._air_temperature)/self._modulation))
+                output = self.bounds(((self._target-self._air_temperature)/self._air_modulation))
                 self.sendUnderFloorHeatingEvent(int(output*100),'air modulation')
             else:
                 # must be in normal demand
