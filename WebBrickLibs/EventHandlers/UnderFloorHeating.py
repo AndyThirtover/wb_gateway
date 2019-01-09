@@ -10,7 +10,6 @@
 #    <eventInterface  module='EventHandlers.UnderFloorHeating' name='UnderFloorHeating' >
 #        <zone_temperature type='http://id.webbrick.co.uk/zones/zone' source='zone7/state' />  
 #        <run_event type='http://id.webbrick.co.uk/zones/zone' source='zone7/run' />  
-#        <stop_event type='http://id.webbrick.co.uk/zones/zone' source='zone7/stop' />  
 #        <air_temperature type='http://id.webbrick.co.uk/events/webbrick/CT' source='webbrick/100/CT/0' />  
 #        <floor_temperature type='http://id.webbrick.co.uk/events/webbrick/CT' source='webbrick/100/CT/1' />  
 #   </eventInterface>
@@ -48,7 +47,6 @@ class UnderFloorHeating( BaseHandler ):
         _log.debug('UnderFloorHeating Initialising')
 
         self._debug = True  # 
-        self._state = None  #  Used for tracking overall state - can be 'stopped','running' and 'over temperature'
 
         self._underfloor_run_evt_type = 'http://id.webbrick.co.uk/events/UnderFloorHeating'
         self._underfloor_run_evt_source = self._log.name
@@ -73,8 +71,6 @@ class UnderFloorHeating( BaseHandler ):
         #
         if self._run_event :
             self._localRouter.subscribe( self._subscribeTime, self, self._run_event['type'] )
-        if self._stop_event :
-            self._localRouter.subscribe( self._subscribeTime, self, self._stop_event['type'] )
         if self._floor_event :
             self._localRouter.subscribe( self._subscribeTime, self, self._floor_event['type'] )
         if self._air_event :
@@ -96,8 +92,6 @@ class UnderFloorHeating( BaseHandler ):
         self._localRouter.unsubscribe( self, 'http://id.webbrick.co.uk/events/time/minute', 'time/minute' )
         if self._run_event :
             self._localRouter.unsubscribe( self, self._run_event['type'] )
-        if self._stop_event :
-            self._localRouter.unsubscribe( self, self._stop_event['type'] )
 
         self.unSubscribeAll()
 
@@ -110,8 +104,6 @@ class UnderFloorHeating( BaseHandler ):
 
         if cfgDict.has_key('run_event'):
             self._run_event = cfgDict['run_event']
-        if cfgDict.has_key('stop_event'):
-            self._stop_event = cfgDict['stop_event']
         if cfgDict.has_key('air_temperature'):
             self._air_event = cfgDict['air_temperature']
         if cfgDict.has_key('floor_temperature'):
@@ -137,7 +129,6 @@ class UnderFloorHeating( BaseHandler ):
             self._log.debug ("Air Mod %s" % str(self._air_modulation))    
             self._log.debug ("Floor Limit %s" % str(self._floor_limit))    
             self._log.debug ("Run Event %s" % str(self._run_event))
-            self._log.debug ("Stop Event %s" % str(self._stop_event))
             self._log.debug ("---------------------------------------")
 
     def doActions( self, actions, inEvent ):
@@ -169,15 +160,7 @@ class UnderFloorHeating( BaseHandler ):
     def doHandleConfig( self, inEvent ):
         from string import upper
         src = inEvent.getSource()
-        #self._log.debug ("Found Event: %s"  % str(inEvent))
-        #self._log.debug ("Handle Config Event SRC %s" % str(src))
-        #
-        #  Now see if this matches anything we need - which at the moment is nothing, but we could have modulation in the future
-        #
-        '''if self._check_event['type'] == CONFIG_TYPE:
-            if self._check_event['source'] == src:
-                self._check_time = int(inEvent.getPayload()['val'])'''
-
+        self._log.debug('Underflor doHandleConfig called with %s' % src)
 
     def doHandleEvent( self, handler, inEvent ):
 
@@ -193,13 +176,9 @@ class UnderFloorHeating( BaseHandler ):
             return makeDeferred(StatusVal.OK)
  
         elif self._run_event and inEvent.getType() == self._run_event['type'] and inEvent.getSource() == self._run_event['source']:
-            self._state = 'running'
             self._target = float(inEvent.getPayload()['targetsetpoint'])
             self.Evaluate_Conditions('new target setpoint')
-
-        elif self._stop_event and inEvent.getType() == self._stop_event['type'] and inEvent.getSource() == self._stop_event['source']:
-            self._state = 'stopped'
-            self.Evaluate_Conditions('stop')
+            return makeDeferred(StatusVal.OK)
  
         elif self._air_event and inEvent.getType() == self._air_event['type'] and inEvent.getSource() == self._air_event['source']:
             self._air_temperature = float(inEvent.getPayload()['val'])
@@ -211,8 +190,7 @@ class UnderFloorHeating( BaseHandler ):
             self.Evaluate_Conditions('floor_temperature')
             return makeDeferred(StatusVal.OK)    
 
-        else: 
-            return super(UnderFloorHeating,self).doHandleEvent( handler, inEvent)
+        return super(UnderFloorHeating,self).doHandleEvent( handler, inEvent)
             
 
     def bounds(self, input):
