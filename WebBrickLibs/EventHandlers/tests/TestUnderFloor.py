@@ -125,10 +125,10 @@ class TestUnderFloorAction(unittest.TestCase):
         self.display_events(TestEventLogger._events)
 
         #self.expectNevents( 15 )
-        self.assertEqual( TestEventLogger._events[2].getType(), u'http://id.webbrick.co.uk/events/UnderFloor' )
-        self.assertEqual( TestEventLogger._events[2].getSource(), u"testing/UnderFloor" )
-        self.assertEqual( TestEventLogger._events[2].getPayload()['output'], 100 )
-        self.assertEqual( TestEventLogger._events[2].getPayload()['reason'], u"full demand" )
+        self.assertEqual( TestEventLogger._events[3].getType(), u'http://id.webbrick.co.uk/events/UnderFloor' )
+        self.assertEqual( TestEventLogger._events[3].getSource(), u"testing/UnderFloor" )
+        self.assertEqual( TestEventLogger._events[3].getPayload()['output'], 100 )
+        self.assertEqual( TestEventLogger._events[3].getPayload()['reason'], u"full demand" )
 
     def testUnderFloorStopEvent(self):
         self._log.debug(sys._getframe().f_code.co_name)
@@ -142,10 +142,10 @@ class TestUnderFloorAction(unittest.TestCase):
 
         self.display_events(TestEventLogger._events)
 
-        self.assertEqual( TestEventLogger._events[2].getType(), u'http://id.webbrick.co.uk/events/UnderFloor' )
-        self.assertEqual( TestEventLogger._events[2].getSource(), u"testing/UnderFloor" )
-        self.assertEqual( TestEventLogger._events[2].getPayload()['output'], 0 )
-        self.assertEqual( TestEventLogger._events[2].getPayload()['reason'], u"over temperature" )
+        self.assertEqual( TestEventLogger._events[3].getType(), u'http://id.webbrick.co.uk/events/UnderFloor' )
+        self.assertEqual( TestEventLogger._events[3].getSource(), u"testing/UnderFloor" )
+        self.assertEqual( TestEventLogger._events[3].getPayload()['output'], 0 )
+        self.assertEqual( TestEventLogger._events[3].getPayload()['reason'], u"over temperature" )
 
     def testUnderFloorNormalStop(self):
         self._log.debug(sys._getframe().f_code.co_name)
@@ -159,10 +159,10 @@ class TestUnderFloorAction(unittest.TestCase):
 
         self.display_events(TestEventLogger._events)
         
-        self.assertEqual( TestEventLogger._events[2].getType(), u'http://id.webbrick.co.uk/events/UnderFloor' )
-        self.assertEqual( TestEventLogger._events[2].getSource(), u"testing/UnderFloor" )
-        self.assertEqual( TestEventLogger._events[2].getPayload()['output'], 0 )
-        self.assertEqual( TestEventLogger._events[2].getPayload()['reason'], u"air target reached" )
+        self.assertEqual( TestEventLogger._events[3].getType(), u'http://id.webbrick.co.uk/events/UnderFloor' )
+        self.assertEqual( TestEventLogger._events[3].getSource(), u"testing/UnderFloor" )
+        self.assertEqual( TestEventLogger._events[3].getPayload()['output'], 0 )
+        self.assertEqual( TestEventLogger._events[3].getPayload()['reason'], u"air target reached" )
 
     def testUnderFloorHighEvent(self):
         self._log.debug(sys._getframe().f_code.co_name)
@@ -176,10 +176,10 @@ class TestUnderFloorAction(unittest.TestCase):
 
         self.display_events(TestEventLogger._events)
 
-        self.assertEqual( TestEventLogger._events[2].getType(), u'http://id.webbrick.co.uk/events/UnderFloor' )
-        self.assertEqual( TestEventLogger._events[2].getSource(), u"testing/UnderFloor" )
-        self.assertEqual( TestEventLogger._events[2].getPayload()['output'], 0 )
-        self.assertEqual( TestEventLogger._events[2].getPayload()['reason'], u"over temperature" )
+        self.assertEqual( TestEventLogger._events[3].getType(), u'http://id.webbrick.co.uk/events/UnderFloor' )
+        self.assertEqual( TestEventLogger._events[3].getSource(), u"testing/UnderFloor" )
+        self.assertEqual( TestEventLogger._events[3].getPayload()['output'], 0 )
+        self.assertEqual( TestEventLogger._events[3].getPayload()['reason'], u"over temperature" )
 
     def testUnderFloorMid(self):
         self._log.debug(sys._getframe().f_code.co_name)
@@ -191,10 +191,10 @@ class TestUnderFloorAction(unittest.TestCase):
         self.common_set(air=15, floor=27)
         time.sleep(1)
         
-        self.assertEqual( TestEventLogger._events[2].getType(), u'http://id.webbrick.co.uk/events/UnderFloor' )
-        self.assertEqual( TestEventLogger._events[2].getSource(), u"testing/UnderFloor" )
-        self.assertEqual( TestEventLogger._events[2].getPayload()['output'], 50 )
-        self.assertEqual( TestEventLogger._events[2].getPayload()['reason'], u"floor modulation" )
+        self.assertEqual( TestEventLogger._events[3].getType(), u'http://id.webbrick.co.uk/events/UnderFloor' )
+        self.assertEqual( TestEventLogger._events[3].getSource(), u"testing/UnderFloor" )
+        self.assertEqual( TestEventLogger._events[3].getPayload()['output'], 50 )
+        self.assertEqual( TestEventLogger._events[3].getPayload()['reason'], u"floor modulation" )
 
     def testUnderFloorAirMid(self):
         self._log.debug(sys._getframe().f_code.co_name)
@@ -206,10 +206,10 @@ class TestUnderFloorAction(unittest.TestCase):
         self.common_set(air=19.5, floor=23)
         time.sleep(1)
 
-        self.assertEqual( TestEventLogger._events[2].getType(), u'http://id.webbrick.co.uk/events/UnderFloor' )
-        self.assertEqual( TestEventLogger._events[2].getSource(), u"testing/UnderFloor" )
-        self.assertEqual( TestEventLogger._events[2].getPayload()['output'], 50 )
-        self.assertEqual( TestEventLogger._events[2].getPayload()['reason'], u"air modulation" )
+        self.assertEqual( TestEventLogger._events[3].getType(), u'http://id.webbrick.co.uk/events/UnderFloor' )
+        self.assertEqual( TestEventLogger._events[3].getSource(), u"testing/UnderFloor" )
+        self.assertEqual( TestEventLogger._events[3].getPayload()['output'], 50 )
+        self.assertEqual( TestEventLogger._events[3].getPayload()['reason'], u"air modulation" )
 
 
 # Code to run unit tests directly from command line.
