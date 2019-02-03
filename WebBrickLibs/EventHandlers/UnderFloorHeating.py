@@ -2,7 +2,8 @@
 # Licenced under 3 clause BSD licence 
 #
 #
-#  Variable Power Underfloor heatinf control
+#  Variable Power Underfloor heating control
+#  Also for towel rails - where only air temp is useful, set floor limit to say 50.
 #
 #  Andy Harris --- 1st January 2019
 #
@@ -115,6 +116,11 @@ class UnderFloorHeating( BaseHandler ):
         if cfgDict.has_key('air_modulation'):
             self._air_modulation =  float(cfgDict['air_modulation']['val'])
 
+        # deal win no floor - i.e. a towel rail situation
+        if cfgDict.has_key('no_floor'):
+            self._floor_temperature = 0.1 ;   # can't be 0.0 otherwise not assumed to be present!
+
+
         if cfgDict.has_key('eventtype'):
             if cfgDict['eventtype'].has_key('type'):
                 self._UnderFloorHeating_evt_type = cfgDict['eventtype']['type']
@@ -135,7 +141,7 @@ class UnderFloorHeating( BaseHandler ):
         if actions:
             for action in actions:
                 # logged in BaseHandler.sendEvent
-                self._log.debug( 'Generate event %s' % ( action ) )
+                self._log.debug( 'Underfloor Generate event %s' % ( action ) )
                 self.sendEvent( makeNewEvent( action, inEvent, None ) )
                 
     def configureActions( self, cfgDict ):
@@ -152,7 +158,14 @@ class UnderFloorHeating( BaseHandler ):
 
     def sendUnderFloorHeatingEvent(self, new_output, reason='event'):
         self._log.debug ("Sending UnderFloorHeating Event: %s" % new_output)
-        self._UnderFloorHeating_event = Event(self._UnderFloorHeating_evt_type,self._UnderFloorHeating_evt_source, {'output': new_output, 'reason': reason} ) 
+        self._UnderFloorHeating_event = Event(self._UnderFloorHeating_evt_type,self._UnderFloorHeating_evt_source, 
+            {'output': new_output, 
+            'reason': reason,
+            'floor': self._floor_temperature,
+            'limit': self._floor_limit,
+            'target': self._target,
+            'air': self._air_temperature
+            } ) 
         self.sendEvent( self._UnderFloorHeating_event)
         self._UnderFloorHeating_event = None  # reset
 
@@ -160,11 +173,11 @@ class UnderFloorHeating( BaseHandler ):
     def doHandleConfig( self, inEvent ):
         from string import upper
         src = inEvent.getSource()
-        self._log.debug('Underflor doHandleConfig called with %s' % src)
+        #self._log.debug('Underfloor doHandleConfig called with %s' % src)  #Noisy Logging
 
     def doHandleEvent( self, handler, inEvent ):
 
-        self._log.debug('inEvent handled %s with %s' % (inEvent.getType(), inEvent.getSource()))
+        #self._log.debug('inEvent handled %s with %s' % (inEvent.getType(), inEvent.getSource()))  #Noisy logging
     
         if inEvent.getType() == 'http://id.webbrick.co.uk/events/config/get':
             self.doHandleConfig( inEvent )
